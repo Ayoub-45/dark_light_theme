@@ -1,27 +1,30 @@
 package org.example.demo;
 
-import java.io.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import java.io.IOException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.annotation.WebServlet;
 
-@WebServlet(name = "helloServlet", value = "/hello-servlet")
-public class HelloServlet extends HttpServlet {
-    private String message;
+@WebServlet(name = "ThemeServlet", value = "/theme-servlet")
+public class ThemeServlet extends HttpServlet {
 
-    public void init() {
-        message = "Hello World!";
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String theme = request.getParameter("theme");
+        if (theme != null && !theme.isEmpty()) {
+            // Create or update the cookie
+            Cookie themeCookie = new Cookie("theme", theme);
+            themeCookie.setMaxAge(60 * 60 * 24 * 30); // 30 days
+            response.addCookie(themeCookie);
+        }
+        response.sendRedirect("index.jsp");
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
-
-        // Hello
-        PrintWriter out = response.getWriter();
-        out.println("<html><body>");
-        out.println("<h1>" + message + "</h1>");
-        out.println("</body></html>");
-    }
-
-    public void destroy() {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendRedirect("index.jsp");
     }
 }
